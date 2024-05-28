@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   const [input, setInput] = useState<string>("");
@@ -9,6 +9,7 @@ function App() {
   function buttonClicked(button: number | string) {
     // setInput((prev) => prev + button.toString());
 
+
     // clear the input
     if(button === "C") {
       setInput("");
@@ -17,15 +18,15 @@ function App() {
 
     // evaluate the input
 
-    if(button === "=" && input !== "") {
+    if((button === "=" && input !== "")) {
       try {
-
-        setInput(eval(input));
+        // alert("Enter clicked")
+        setInput(eval(input).toString());
 
         return;
       } catch (error) {
         
-        setInput(`Error: ${error}`);
+        // setInput(`Error: ${error}`);
 
         if(error instanceof SyntaxError) {
           setInput("Invalid operation");
@@ -33,6 +34,8 @@ function App() {
           // setTimeout(() => {
           //   setInput("");
           // }, 2000);
+        } else {
+          setInput(`Error: ${error}`);
         }
 
         return;
@@ -62,6 +65,37 @@ function App() {
     })
 
   }
+
+  function keyboardEvent(e : KeyboardEvent) {
+    
+    // alert(e.key);
+
+    if(e.key === "Enter") {
+      buttonClicked("=");
+    }
+
+    if(e.key === "Backspace") {
+      buttonClicked("←");
+    }
+
+    if(e.key === "Escape") {
+      buttonClicked("C");
+    }
+
+    const validKeys = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "."];
+
+    if(validKeys.includes(e.key)) {
+      buttonClicked(e.key);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("keydown", keyboardEvent);
+
+    return () => {
+      window.removeEventListener("keydown", keyboardEvent);
+    }
+  }, [input]);
 
   return (
     <div>
