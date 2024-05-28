@@ -1,15 +1,84 @@
-
+import { useState } from "react";
 
 function App() {
+  const [input, setInput] = useState<string>("");
+
+  const buttonArray = ["C", "/", "*", "←", 7, 8, 9, "-", 4, 5, 6, "+", 1, 2, 3, "=", 0, "."];
+
+
+  function buttonClicked(button: number | string) {
+    // setInput((prev) => prev + button.toString());
+
+    // clear the input
+    if(button === "C") {
+      setInput("");
+      return;
+    }
+
+    // evaluate the input
+
+    if(button === "=" && input !== "") {
+      try {
+
+        setInput(eval(input));
+
+        return;
+      } catch (error) {
+        
+        setInput(`Error: ${error}`);
+
+        if(error instanceof SyntaxError) {
+          setInput("Invalid operation");
+
+          // setTimeout(() => {
+          //   setInput("");
+          // }, 2000);
+        }
+
+        return;
+      }
+    }
+
+    // backspace
+    if(button === "←") {
+
+      const newInput = input.slice(0, input.length - 1);
+      setInput(newInput);
+
+      // alert("clicked");
+      return;
+    }
+
+    // setInput((prev) => prev + button.toString());
+
+    // setting the display value
+    setInput(function(prev) : string {
+
+      if(prev === "Invalid operation") {
+        return button.toString();
+      }
+
+      return prev + button.toString();
+    })
+
+  }
+
   return (
     <div>
       <h1 className="text-green-800 font-bold text-center text-3xl mt-5">Calculator</h1>
 
       <div className="flex justify-center mt-10">
         <div className="bg-green-700 p-4 rounded-lg">
-          <input type="text" className="w-80 h-12 text-2xl p-2 text-right" />
+          <input type="text" className="w-80 h-12 text-2xl p-2 text-right" value={input} readOnly placeholder="00"/>
           <div className="grid grid-cols-4 gap-2 mt-5">
-            <button className="bg-gray-200 text-2xl rounded-lg">7</button>
+
+            {
+              buttonArray.map((button, index) => {
+                return <button key = {index} className="bg-gray-200 text-2xl rounded-lg" onClick={() => buttonClicked(button)}>{button}</button>
+              })
+            }
+
+            {/* <button className="bg-gray-200 text-2xl rounded-lg">7</button>
             <button className="bg-gray-200 text-2xl rounded-lg">8</button>
             <button className="bg-gray-200 text-2xl rounded-lg">9</button>
             <button className="bg-gray-200 text-2xl rounded-lg">/</button>
@@ -24,7 +93,7 @@ function App() {
             <button className="bg-gray-200 text-2xl rounded-lg">0</button>
             <button className="bg-gray-200 text-2xl rounded-lg">.</button>
             <button className="bg-gray-200 text-2xl rounded-lg">=</button>
-            <button className="bg-gray-200 text-2xl rounded-lg">+</button>
+            <button className="bg-gray-200 text-2xl rounded-lg">+</button> */}
           </div>
         </div>
       </div>
